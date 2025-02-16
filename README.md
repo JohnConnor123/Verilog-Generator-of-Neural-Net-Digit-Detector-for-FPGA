@@ -15,6 +15,7 @@ git clone https://github.com/ZFTurbo/Verilog-Generator-of-Neural-Net-Digit-Detec
 cd Verilog-Generator-of-Neural-Net-Digit-Detector-for-FPGA
 python3.10 -m venv venv
 ./venv/Scripts/Activate.ps1
+pip3.10 install -r requirements.txt
 ```
 
 ## How to run:
