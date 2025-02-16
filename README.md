@@ -6,18 +6,16 @@ production ready to use in real device. It can be easily extended to be used wit
 different neural net structure.
 
 ## Requirements
-Python 3.10
+Python 3.10, libraries listed in requirements.txt
 
 ## Installation
-* git clone https://github.com/ZFTurbo/Verilog-Generator-of-Neural-Net-Digit-Detector-for-FPGA.git
-* cd Verilog-Generator-of-Neural-Net-Digit-Detector-for-FPGA
-* python3.10 -m venv venv
-
-For windows (in powershell):
-* ./venv/Scripts/Activate.ps1
-
-For Linux (platform not tested):
-* source venv/bin/activate
+Open powershell in your working directory and paste these commands:
+```
+git clone https://github.com/ZFTurbo/Verilog-Generator-of-Neural-Net-Digit-Detector-for-FPGA.git
+cd Verilog-Generator-of-Neural-Net-Digit-Detector-for-FPGA
+python3.10 -m venv venv
+./venv/Scripts/Activate.ps1
+```
 
 ## How to run:
 * python r01_train_neural_net_and_prepare_initial_weights.py
