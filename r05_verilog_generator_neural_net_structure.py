@@ -1254,8 +1254,8 @@ def TOP(directory, size, razmer, max_address_value, output_neurons_count, max_we
     for i in range(len(layers)):
         layer = layers[i]
         if 'Conv2D' in str(type(layer)):
-            mem = layer.output_shape[3]-1
-            filt = layer.input_shape[3]-1
+            mem = layer.output.shape[3]-1
+            filt = layer.input.shape[3]-1
 
             if (start == 0):  file.write("	    if ((TOPlvl=="+str(TOPlvl)+")&&(step=="+str(step)+")) nextstep = 1;\n")
             else: start = 0
@@ -1269,7 +1269,7 @@ def TOP(directory, size, razmer, max_address_value, output_neurons_count, max_we
             file.write("			    conv_en = 1;\n")
             file.write("			    mem = "+str(mem)+";\n")
             file.write("			    filt = "+str(filt)+";\n")
-            file.write("			    matrix = "+str(layer.input_shape[1])+";\n")
+            file.write("			    matrix = "+str(layer.input.shape[1])+";\n")
             if 'GlobalMaxPooling2D' in str(type(layers[i+2])):
                 file.write("			    globmaxp_en = 1;\n")
             else:   file.write("			    globmaxp_en = 0;\n")
@@ -1282,7 +1282,7 @@ def TOP(directory, size, razmer, max_address_value, output_neurons_count, max_we
             TOPlvl += 1
         elif 'MaxPooling2D' in str(type(layer)):
             if not 'GlobalMaxPooling2D' in str(type(layer)):
-                for i in range(int(layer.input_shape[3]/4)):
+                for i in range(int(layer.input.shape[3]/4)):
                     file.write("	    if ((TOPlvl=="+str(TOPlvl)+")&&(STOP_maxp==0))\n")
                     file.write("		    begin\n")
                     file.write("			    memstartp = "+str(one)+"+"+str(i)+"*matrix2*((4 >> (num_conv >> 1)));\n")
@@ -1301,8 +1301,8 @@ def TOP(directory, size, razmer, max_address_value, output_neurons_count, max_we
             file.write("            begin \n")
             file.write("                globmaxp_en = 0; \n")
             file.write("                nextstep = 1; \n")
-            file.write("                in_dense = "+str(layer.input_shape[1])+"; \n")
-            file.write("                out_dense = "+str(layer.output_shape[1])+"; \n")
+            file.write("                in_dense = "+str(layer.input.shape[1])+"; \n")
+            file.write("                out_dense = "+str(layer.output.shape[1])+"; \n")
             file.write("            end   \n")
 
             step += 2
@@ -1541,9 +1541,9 @@ if __name__ == '__main__':
         layer = model.layers[i]
         if 'Conv2D' in str(type(layer)):
             total_conv_layers_number += 1
-            conv_inputs.append(layer.input_shape[1])
-            conv_mem.append(layer.input_shape[3])
-            conv_filt.append(layer.output_shape[3])
+            conv_inputs.append(layer.input.shape[1])
+            conv_mem.append(layer.input.shape[3])
+            conv_filt.append(layer.output.shape[3])
             w = layer.get_weights()
             conv_block_size_1 = len(w[0])
             conv_block_size_2 = len(w[0][0])
@@ -1553,18 +1553,18 @@ if __name__ == '__main__':
                 max_weights_per_layer = max_weights_per_layer_1
         elif 'MaxPooling2D' in str(type(layer)):
             if not 'GlobalMaxPooling2D' in str(type(layer)):
-                total_maxp_layers_number += int(layer.input_shape[3]/4)
+                total_maxp_layers_number += int(layer.input.shape[3]/4)
         elif 'Dense' in str(type(layer)):
             w = layer.get_weights()
             total_dense_layers_number += 1
-            dense_inputs.append(layer.input_shape[1])
-            dense_outputs.append(layer.output_shape[1])
+            dense_inputs.append(layer.input.shape[1])
+            dense_outputs.append(layer.output.shape[1])
             max_address_value += len(layer.get_weights()[0][0]) * len(w[0])
             max_weights_per_layer_1 = int(len(w[0][0]) * len(w[0])/(conv_block_size_1*conv_block_size_2)) + 1
             if max_weights_per_layer_1 > max_weights_per_layer:
                 max_weights_per_layer = max_weights_per_layer_1
         if i == len(model.layers) - 1:
-            output_neurons_count = layer.output_shape[1]
+            output_neurons_count = layer.output.shape[1]
 
     max_input_image_size = max(conv_inputs)
     steps_count = 2 + (total_conv_layers_number*2) + (total_dense_layers_number*2) + 1

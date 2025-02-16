@@ -10,6 +10,10 @@ import os
 import random
 
 
+epochs = 20
+optimizer = 'Adam'
+learning_rate = 0.003
+
 gpu_use = 0
 os.environ["KERAS_BACKEND"] = "tensorflow"
 os.environ["CUDA_VISIBLE_DEVICES"] = "{}".format(gpu_use)
@@ -178,12 +182,10 @@ if __name__ == '__main__':
         Y_train = np.concatenate((Y_train, np.zeros((Y_train.shape[0], 1))), axis=1)
         Y_test = np.concatenate((Y_test, np.zeros((Y_test.shape[0], 1))), axis=1)
 
-        optimizer = 'Adam'
-        learning_rate = 0.001
         if optimizer == 'SGD':
-            optim = SGD(lr=learning_rate, decay=1e-6, momentum=0.9, nesterov=True)
+            optim = SGD(learning_rate=learning_rate, decay=1e-6, momentum=0.9, nesterov=True)
         else:
-            optim = Adam(lr=learning_rate)
+            optim = Adam(learning_rate=learning_rate)
         model.compile(optimizer=optim, loss='categorical_crossentropy', metrics=['accuracy'])
         if continue_training == 1:
             print('Continue training. Loading weights from: {}'.format(cache_model_path))
@@ -197,19 +199,17 @@ if __name__ == '__main__':
             ModelCheckpoint(cache_model_path, monitor='val_loss', save_best_only=True, verbose=0),
         ]
 
-        history = model.fit_generator(generator=batch_generator_train(X_train, Y_train, batch_size, 'train'),
-                                      epochs=2000,
-                                      steps_per_epoch=200,
-                                      validation_data=batch_generator_train(X_test, Y_test, batch_size, 'valid'),
-                                      validation_steps=200,
-                                      verbose=2,
-                                      max_queue_size=20,
-                                      callbacks=callbacks)
+        history = model.fit(batch_generator_train(X_train, Y_train, batch_size, 'train'),
+                            epochs=epochs,
+                            steps_per_epoch=200,
+                            validation_data=batch_generator_train(X_test, Y_test, batch_size, 'valid'),
+                            validation_steps=200,
+                            verbose=2,
+                            callbacks=callbacks)
 
-        save_history(history, final_model_path, columns=('acc', 'val_acc'))
-        score = model.evaluate_generator(generator=evaluate_generator_train(X_test, Y_test, batch_size, 'valid'),
-                                         steps=X_test.shape[0] // batch_size,
-                                         max_queue_size=1)
+        save_history(history, final_model_path, columns=('accuracy', 'val_accuracy'))
+        score = model.evaluate(evaluate_generator_train(X_test, Y_test, batch_size),
+                               steps=X_test.shape[0] // batch_size)
         print('Test score:', score[0])
         print('Test accuracy:', score[1])
         model.load_weights(cache_model_path)
@@ -235,5 +235,5 @@ if __name__ == '__main__':
     print('Accuracy: {:.2f}%'.format(100*accuracy / len(pred_answers)))
 
 '''
-Accuracy: 97.39%
+Accuracy after 2000 epochs: 97.39%
 '''
