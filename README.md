@@ -6,7 +6,18 @@ production ready to use in real device. It can be easily extended to be used wit
 different neural net structure.
 
 ## Requirements
-Python 3.5, Tensorflow 1.4.0, Keras 2.1.3
+Python 3.10
+
+## Installation
+* git clone https://github.com/ZFTurbo/Verilog-Generator-of-Neural-Net-Digit-Detector-for-FPGA.git
+* cd Verilog-Generator-of-Neural-Net-Digit-Detector-for-FPGA
+* python3.10 -m venv venv
+
+For windows (in powershell):
+* ./venv/Scripts/Activate.ps1
+
+For Linux (platform not tested):
+* source venv/bin/activate
 
 ## How to run:
 * python r01_train_neural_net_and_prepare_initial_weights.py
