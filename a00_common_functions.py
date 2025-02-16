@@ -69,11 +69,11 @@ def save_history(history, path, columns=('loss', 'val_loss')):
 
 def prepare_image_from_camera(im_path):
     img = cv2.imread(im_path)
-    print('Read image: {} Shape: {}'.format(im_path, img.shape))
+    # print('Read image: {} Shape: {}'.format(im_path, img.shape))
 
     # Take central part of image with size 224х224
     img = img[8:-8, 48:-48]
-    print('Reduced shape: {}'.format(img.shape))
+    # print('Reduced shape: {}'.format(img.shape))
 
     # Convert to grayscale with human based formulae https://samarthbhargav.wordpress.com/2014/05/05/image-processing-with-python-rgb-to-grayscale-conversion/
     # Divider here is 16 for easier implementation of division in verilog for FPGA.
@@ -95,8 +95,8 @@ def prepare_image_from_camera(im_path):
     # Check dynamic range
     min_pixel = output_image.min()
     max_pixel = output_image.max()
-    print('Min pixel: {}'.format(min_pixel))
-    print('Max pixel: {}'.format(max_pixel))
+    # print('Min pixel: {}'.format(min_pixel))
+    # print('Max pixel: {}'.format(max_pixel))
 
     # Rescale dynamic range if needed (no Verilog implementation, so skip)
     if 0:
